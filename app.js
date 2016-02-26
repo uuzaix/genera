@@ -40,14 +40,46 @@ export function superMemo2(entry, answer) {
 // console.log(superMemo2(entry, answer2))
 
 export function newEntries(db) {
-	return [{id: 1}, {id: 4}];
+	var newEntry = []
+	db.forEach(function(entry) {
+		if (entry.due == "NEW") {
+			newEntry.push({id: entry.id})
+		}
+	})
+	return newEntry
 }
 
 export function dueEntries(db, today) {
-	return [{id: 5}, {id: 2}];
+	var dueEntry = [];
+	db.forEach(function(entry) {
+		if (entry.due != "NEW" && entry.due <= today) {
+			dueEntry.push(entry)
+		}
+	})
+	dueEntry.sort(function (a, b) {
+		return a.due-b.due
+	})
+	var dueID = [];
+	dueEntry.forEach(function(entry) {
+		dueID.push({id: entry.id})
+	})
+	return dueID
 }
 
 // TODO better name
 export function toLearnToday(db, today) {
 	return dueEntries(db, today).concat(newEntries(db));
 }
+
+
+const DB = [
+    {id: 1, due: 'NEW'},
+    {id: 2, due: new Date(2016, 1, 1)},
+    {id: 3, due: new Date(2020, 1, 1)},
+    {id: 4, due: 'NEW'},
+    {id: 5, due: new Date(2015, 1, 1)}
+]
+
+const TODAY = new Date(2017, 1, 1);
+
+console.log (dueEntries(DB, TODAY))
