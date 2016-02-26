@@ -1,4 +1,4 @@
-import { updateEntry, superMemo2 } from './app'
+import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday } from './app'
 import { expect } from 'chai'
 
 describe('updateEntry', function () {
@@ -32,7 +32,7 @@ describe('superMemo2', function () {
 });
 
 const FREQUENCIES = [
-    {word: 'chose', genus: 'F', rank: 1 frequency: 1773.62},
+    {word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
     {word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
     {word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
     {word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
@@ -44,14 +44,36 @@ const FREQUENCIES = [
     {word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
 ]
 
-describe('nextEntry', function () {
-    const db = [
-        {id: 1, due: 'NEW'},
-        {id: 2, due: new Date(2016, 1, 1)}
-        {id: 3, due: new Date(2017, 1, 1)}
-        {id: 4, due: 'NEW'}
-    ]
-    it('should return all new entries', function () {
+const DB = [
+    {id: 1, due: 'NEW'},
+    {id: 2, due: new Date(2016, 1, 1)},
+    {id: 3, due: new Date(2020, 1, 1)},
+    {id: 4, due: 'NEW'},
+    {id: 5, due: new Date(2015, 1, 1)}
+]
 
-    })
+const TODAY = new Date(2017, 1, 1);
+
+describe('newEntries', function () {
+    it('should return all new entries in order of frequency', function () {
+        const entries = newEntries(DB);
+        const ids = entries.map(e => e.id);
+        expect(ids).to.deep.equal([1, 4]);
+    });
+});
+
+describe('dueEntries', function() {
+    it('should return all due entries, most due first', function() {
+        const entries = dueEntries(DB, TODAY);
+        const ids = entries.map(e => e.id);
+        expect(ids).to.deep.equal([5, 2]);
+    });
+});
+
+describe('toLearnToday', function() {
+    it('should return all due entries, then all new entries', function() {
+        const entries = toLearnToday(DB, TODAY);
+        const ids = entries.map(e => e.id);
+        expect(ids).to.deep.equal([5, 2, 1, 4]);
+    });
 });

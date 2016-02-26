@@ -38,3 +38,16 @@ export function superMemo2(entry, answer) {
 // console.log(superMemo2(entry, answer))
 // console.log(superMemo2(entry, answer1))
 // console.log(superMemo2(entry, answer2))
+
+export function newEntries(db) {
+	return [{id: 1}, {id: 4}];
+}
+
+export function dueEntries(db, today) {
+	return [{id: 5}, {id: 2}];
+}
+
+// TODO better name
+export function toLearnToday(db, today) {
+	return dueEntries(db, today).concat(newEntries(db));
+}
