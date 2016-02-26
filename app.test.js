@@ -45,11 +45,11 @@ const FREQUENCIES = [
 ]
 
 const DB = [
-    {id: 1, due: 'NEW'},
-    {id: 2, due: new Date(2016, 1, 1)},
-    {id: 3, due: new Date(2020, 1, 1)},
-    {id: 4, due: 'NEW'},
-    {id: 5, due: new Date(2015, 1, 1)}
+    {id: 1, due: 'NEW', frequency: 1049.32},
+    {id: 2, due: new Date(2016, 1, 1), frequency: 899.25},
+    {id: 3, due: new Date(2020, 1, 1), frequency: 1021.22},
+    {id: 4, due: 'NEW', frequency: 1773.62},
+    {id: 5, due: new Date(2015, 1, 1), frequency: 499.6}
 ]
 
 const TODAY = new Date(2017, 1, 1);
@@ -58,7 +58,7 @@ describe('newEntries', function () {
     it('should return all new entries in order of frequency', function () {
         const entries = newEntries(DB);
         const ids = entries.map(e => e.id);
-        expect(ids).to.deep.equal([1, 4]);
+        expect(ids).to.deep.equal([4, 1]);
     });
 });
 
@@ -74,6 +74,6 @@ describe('toLearnToday', function() {
     it('should return all due entries, then all new entries', function() {
         const entries = toLearnToday(DB, TODAY);
         const ids = entries.map(e => e.id);
-        expect(ids).to.deep.equal([5, 2, 1, 4]);
+        expect(ids).to.deep.equal([5, 2, 4, 1]);
     });
 });
