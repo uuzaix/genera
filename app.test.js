@@ -45,11 +45,11 @@ const FREQUENCIES = [
 ]
 
 const DB = [
-    {id: 1, due: 'NEW', frequency: 1049.32},
-    {id: 2, due: new Date(2016, 1, 1), frequency: 899.25},
-    {id: 3, due: new Date(2020, 1, 1), frequency: 1021.22},
-    {id: 4, due: 'NEW', frequency: 1773.62},
-    {id: 5, due: new Date(2015, 1, 1), frequency: 499.6}
+    {id: 1, due: 'NEW', frequency: 4},
+    {id: 2, due: new Date(2016, 1, 1), frequency: 2},
+    {id: 3, due: new Date(2020, 1, 1), frequency: 3},
+    {id: 4, due: 'NEW', frequency: 5},
+    {id: 5, due: new Date(2015, 1, 1), frequency: 1}
 ]
 
 const TODAY = new Date(2017, 1, 1);

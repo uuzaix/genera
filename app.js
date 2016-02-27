@@ -42,16 +42,12 @@ export function superMemo2(entry, answer) {
 // console.log(superMemo2(entry, answer2))
 
 export function newEntries(db) {
-	var newEntry = db.filter(function(entry) {
-		return entry.due == "NEW"
-	})
+	var newEntry = db.filter(entry => entry.due === "NEW")
 	return _.orderBy(newEntry, ['frequency'], ['desc']);
 }
 
 export function dueEntries(db, today) {
-	 var dueEntry = db.filter(function(entry) {
-		return (entry.due != "NEW" && entry.due <= today)
-	});
+	 var dueEntry = db.filter(entry => (entry.due !== "NEW" && entry.due <= today));
 	return _.orderBy(dueEntry, ['due'], ['asc']);
 }
 
