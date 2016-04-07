@@ -1,4 +1,4 @@
-import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSupermemoParameters} from './app'
+import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSupermemoParameters, createEntry, createUserDB} from './app'
 import { expect } from 'chai'
 
 describe('updateEntry', function () {
@@ -32,16 +32,16 @@ describe('superMemo2', function () {
 });
 
 const FREQUENCIES = [
-{word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
-{word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
-{word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
-{word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
-{word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
-{word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
-{word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
-{word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
-{word: 'main', genus: 'F', rank: 9, frequency: 499.6},
-{word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
+    {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
+    {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
+    {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
+    {id: 4, word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
+    {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
+    {id: 6, word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
+    {id: 7, word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
+    {id: 8, word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
+    {id: 9, word: 'main', genus: 'F', rank: 9, frequency: 499.6},
+    {id: 10, word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
 ]
 
 const DB = [
@@ -51,6 +51,24 @@ const DB = [
 {id: 4, due: 'NEW', frequency: 5},
 {id: 5, due: new Date(2015, 1, 1), frequency: 1}
 ]
+
+const USER_DB = { 
+   entries: [
+      {id: 2, due: new Date(2016, 1, 1), word: {word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {}},
+      {id: 3, due: new Date(2020, 1, 1), word: {word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {}}, 
+      {id: 5, due: new Date(2015, 1, 1), word: {word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}}
+    ],
+    data: {
+      lastNew: 7     
+    }
+}
+
+const entry = {
+ id: 10,
+ word: {id:10, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
+ superMemoData: {interval: 1, EF: 1.3, repetition: 1},
+}
+
 
 const TODAY = new Date(2017, 1, 1);
 
@@ -81,10 +99,26 @@ describe('toLearnToday', function() {
 describe('getDefaultSupermemoParameters', function() {
     it('should return correct SM data', function() {
         const correctEasyWord = getDefaultSupermemoParameters(true, true);
-        const incorrectWord = getDefaultSupermemoParameters(false, true);
+        const incorrectEasyWord = getDefaultSupermemoParameters(false, true);
+        const incorrectHardWord = getDefaultSupermemoParameters(false, true);
         const correctHardWord = getDefaultSupermemoParameters(true, false);
         expect(correctEasyWord).to.deep.equal({interval: 100, EF: 2.5, repetition: 1});
-        expect(incorrectWord).to.deep.equal({interval: 1, EF: 1.3, repetition: 1});
+        expect(incorrectEasyWord).to.deep.equal({interval: 1, EF: 1.3, repetition: 1});
+        expect(incorrectHardWord).to.deep.equal({interval: 1, EF: 1.3, repetition: 1});
         expect(correctHardWord).to.deep.equal({interval: 7, EF: 2.5, repetition: 1});
+    });
+});
+
+describe('createEntry', function() {
+    it('should return new entry from FREQUENCIES', function() {
+        const newEntry = createEntry(FREQUENCIES, 7);
+        expect(newEntry).to.deep.equal({id: 7, due: 'NEW', word: {id: 7, word: 'peu', genus: 'M', rank: 7, frequency: 894.78}});
+    });
+});
+
+describe('createUserDB', function() {
+    it('should return new empty DB', function() {
+        const newUserDB = createUserDB();
+        expect(newUserDB).to.deep.equal({entries: [], data: {lastNew: 0}});
     });
 });

@@ -91,3 +91,14 @@ export function getDefaultSupermemoParameters(correct, sure) {
     return {interval: 1, EF: 1.3, repetition: 1}
   }
 }
+
+export function createEntry(freqDB, id) {
+  var newEntry = freqDB.filter(function(entry) {
+    return entry.id == id
+  });
+  return {id: id, due: 'NEW', word: newEntry[0]}
+}
+
+export function createUserDB() {
+  return {entries: [], data: {lastNew: 0}}
+}
