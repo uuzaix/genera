@@ -1,4 +1,4 @@
-import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday } from './app'
+import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSupermemoParameters} from './app'
 import { expect } from 'chai'
 
 describe('updateEntry', function () {
@@ -32,24 +32,24 @@ describe('superMemo2', function () {
 });
 
 const FREQUENCIES = [
-    {word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
-    {word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
-    {word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
-    {word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
-    {word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
-    {word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
-    {word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
-    {word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
-    {word: 'main', genus: 'F', rank: 9, frequency: 499.6},
-    {word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
+{word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
+{word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
+{word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
+{word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
+{word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
+{word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
+{word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
+{word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
+{word: 'main', genus: 'F', rank: 9, frequency: 499.6},
+{word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
 ]
 
 const DB = [
-    {id: 1, due: 'NEW', frequency: 4},
-    {id: 2, due: new Date(2016, 1, 1), frequency: 2},
-    {id: 3, due: new Date(2020, 1, 1), frequency: 3},
-    {id: 4, due: 'NEW', frequency: 5},
-    {id: 5, due: new Date(2015, 1, 1), frequency: 1}
+{id: 1, due: 'NEW', frequency: 4},
+{id: 2, due: new Date(2016, 1, 1), frequency: 2},
+{id: 3, due: new Date(2020, 1, 1), frequency: 3},
+{id: 4, due: 'NEW', frequency: 5},
+{id: 5, due: new Date(2015, 1, 1), frequency: 1}
 ]
 
 const TODAY = new Date(2017, 1, 1);
@@ -75,5 +75,16 @@ describe('toLearnToday', function() {
         const entries = toLearnToday(DB, TODAY);
         const ids = entries.map(e => e.id);
         expect(ids).to.deep.equal([5, 2, 4, 1]);
+    });
+});
+
+describe('getDefaultSupermemoParameters', function() {
+    it('should return correct SM data', function() {
+        const correctEasyWord = getDefaultSupermemoParameters(true, true);
+        const incorrectWord = getDefaultSupermemoParameters(false, true);
+        const correctHardWord = getDefaultSupermemoParameters(true, false);
+        expect(correctEasyWord).to.deep.equal({interval: 100, EF: 2.5, repetition: 1});
+        expect(incorrectWord).to.deep.equal({interval: 1, EF: 1.3, repetition: 1});
+        expect(correctHardWord).to.deep.equal({interval: 7, EF: 2.5, repetition: 1});
     });
 });
