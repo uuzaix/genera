@@ -1,4 +1,4 @@
-import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSupermemoParameters, createEntry, createUserDB} from './app'
+import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSupermemoParameters, createEntry, createUserDB, getNextNewEntryForToday} from './app'
 import { expect } from 'chai'
 
 describe('updateEntry', function () {
@@ -59,7 +59,7 @@ const USER_DB = {
       {id: 5, due: new Date(2015, 1, 1), word: {word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}}
     ],
     data: {
-      lastNew: 7     
+      lastNew: 6     
     }
 }
 
@@ -122,3 +122,11 @@ describe('createUserDB', function() {
         expect(newUserDB).to.deep.equal({entries: [], data: {lastNew: 0}});
     });
 });
+
+describe('getNextNewEntryForToday', function() {
+    it('should return next new entry form FREQUENCIES', function() {
+        const nextNewEntry = getNextNewEntryForToday(FREQUENCIES, USER_DB);
+        expect(nextNewEntry).to.deep.equal({id: 7, due: 'NEW', word: {id: 7, word: 'peu', genus: 'M', rank: 7, frequency: 894.78}});
+    });
+});
+

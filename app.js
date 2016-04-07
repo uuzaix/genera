@@ -92,6 +92,7 @@ export function getDefaultSupermemoParameters(correct, sure) {
   }
 }
 
+//freqDB - pass to func or be in the global scope?
 export function createEntry(freqDB, id) {
   var newEntry = freqDB.filter(function(entry) {
     return entry.id == id
@@ -101,4 +102,9 @@ export function createEntry(freqDB, id) {
 
 export function createUserDB() {
   return {entries: [], data: {lastNew: 0}}
+}
+
+//freqDB - pass to func or be in the global scope?
+export function getNextNewEntryForToday(freqDB, USER_DB) {
+  return createEntry(freqDB, (USER_DB.data.lastNew + 1))
 }
