@@ -1,4 +1,4 @@
-import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSupermemoParameters, createEntry, createUserDB, getNextNewEntryForToday} from './app'
+import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSuperMemoParameters, createEntry, createUserDB, getNextNewEntryForToday} from './app'
 import { expect } from 'chai'
 
 describe('updateEntry', function () {
@@ -10,17 +10,17 @@ describe('updateEntry', function () {
 
 describe('superMemo2', function () {
     it('should update interval and repetition to 1 when quality is 2', function () {
-        const quality2 = superMemo2({interval: 5, repetition: 5, EF: 2.0}, {quality: 2});
+        const quality2 = superMemo2({interval: 5, repetition: 5, EF: 2.0}, 2);
         expect(quality2.interval).to.equal(1);
         expect(quality2.repetition).to.equal(1);
         expect(quality2.EF).to.equal(2.0);
     });
     it('should calculate correct values', function () {
-        const quality4 = superMemo2({interval: 5, repetition: 5, EF: 2.0}, {quality: 4});
+        const quality4 = superMemo2({interval: 5, repetition: 5, EF: 2.0}, 4);
         expect(quality4.interval).to.equal(10);
         expect(quality4.repetition).to.equal(6);
         expect(quality4.EF).to.equal(2.0);
-        const quality5 = superMemo2({interval: 1, repetition: 1, EF: 1.0}, {quality: 5});
+        const quality5 = superMemo2({interval: 1, repetition: 1, EF: 1.0}, 5);
         expect(quality5.interval).to.equal(6);
         expect(quality5.repetition).to.equal(2);
         expect(quality5.EF).to.equal(1.1);
@@ -65,6 +65,7 @@ const USER_DB = {
 
 const entry = {
  id: 10,
+ due: new Date(2016, 1, 1),
  word: {id:10, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
  superMemoData: {interval: 1, EF: 1.3, repetition: 1},
 }
@@ -96,12 +97,12 @@ describe('toLearnToday', function() {
     });
 });
 
-describe('getDefaultSupermemoParameters', function() {
+describe('getDefaultSuperMemoParameters', function() {
     it('should return correct SM data', function() {
-        const correctEasyWord = getDefaultSupermemoParameters(true, true);
-        const incorrectEasyWord = getDefaultSupermemoParameters(false, true);
-        const incorrectHardWord = getDefaultSupermemoParameters(false, true);
-        const correctHardWord = getDefaultSupermemoParameters(true, false);
+        const correctEasyWord = getDefaultSuperMemoParameters(true, true);
+        const incorrectEasyWord = getDefaultSuperMemoParameters(false, true);
+        const incorrectHardWord = getDefaultSuperMemoParameters(false, true);
+        const correctHardWord = getDefaultSuperMemoParameters(true, false);
         expect(correctEasyWord).to.deep.equal({interval: 100, EF: 2.5, repetition: 1});
         expect(incorrectEasyWord).to.deep.equal({interval: 1, EF: 1.3, repetition: 1});
         expect(incorrectHardWord).to.deep.equal({interval: 1, EF: 1.3, repetition: 1});

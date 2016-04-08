@@ -1,48 +1,20 @@
 import _ from 'lodash'
 
-// export function updateEntry(entry, answer) {
-//   if (entry.due === 'NEW') {
-//     if (entry.genus === answer.answer) {
-//       if (answer.sure === true) {
-//         entry.due = TODAY + 365;
-//         //EF?
-//         //interval?
-//       }
-//       else {
-//         entry.due = TODAY + 7;
-//         //EF?
-//         //interval?
-//       }
-//     }
-//     else {
-//       entry.due = TODAY + 1;
-//       //EF?
-//       //interval?
-//       //superMemo initialise
-//     }
-//     entry.repetition = 1;
-//     return entry
-//   }
-//   else {
-//     return superMemo2(entry, answer);
-//   }
-// }
-
-export function superMemo2(entry, answer) {
+export function superMemo2(entry, quality) {
   // if (answer.quality < 2 || answer.quality > 5) {
   //  throw "Quality should be between 2 and 5";
   // }
 
   //calculate repetition and EF based on answer.quality. 
-  if(answer.quality == 2){
+  if(quality == 2){
     entry.repetition = 1 //proceed as a new word without updating the EF
   }
   else {
-    entry.EF = entry.EF + (0.1 - (5-answer.quality)*(0.08+(5-answer.quality)*0.02)) //calculate new EF
+    entry.EF = entry.EF + (0.1 - (5-quality)*(0.08+(5-quality)*0.02)) //calculate new EF
     entry.repetition += 1
   }
 
-
+//calculetes interval of repetition
   if(entry.repetition == 1) {
     entry.interval = 1
   }
@@ -80,7 +52,7 @@ export function toLearnToday(db, today) {
   return dueEntries(db, today).concat(newEntries(db));
 }
 
-export function getDefaultSupermemoParameters(correct, sure) {
+export function getDefaultSuperMemoParameters(correct, sure) {
   if (correct === true && sure === true) {
     return {interval: 100, EF: 2.5, repetition: 1}
   }
@@ -108,3 +80,21 @@ export function createUserDB() {
 export function getNextNewEntryForToday(freqDB, USER_DB) {
   return createEntry(freqDB, (USER_DB.data.lastNew + 1))
 }
+
+export function updateEntry(entry, correct, sure) {
+  if (enrty.due === 'NEW') {
+    entry.superMemoData = getDefaultSuperMemoParameters(correct, sure);
+    //entry.due = new Date() 
+    entry.due.setDate(entry.due.getDate()+ entry.superMemoData.interval);
+  }
+  else {
+    entry.superMemoData = updateSupeMemoParameters(entry.superMemoData, correct)
+  }
+  return entry
+}
+
+export function updateSuperMemoParameters(data, correct) {
+  var quality = correct ? 5 : 2;
+  return superMemo2(data, quality);
+}
+
