@@ -1,4 +1,4 @@
-import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSuperMemoParameters, createEntry, createUserDB, getNextNewEntryForToday, updateSuperMemoParameters} from './app'
+import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSuperMemoParameters, createEntry, createUserDB, getNextNewEntryForToday, updateSuperMemoParameters, getNextDueEntryForToday} from './app'
 import { expect } from 'chai'
 
 describe('updateEntry', function () {
@@ -148,6 +148,13 @@ describe('updateSuperMemoParameters', function() {
     it('should not update EF if correct = false', function() {
         const SMData = updateSuperMemoParameters(entry2.superMemoData, false);
         expect(SMData).to.deep.equal({interval: 1, EF: 1.3, repetition: 1});
+    });
+});
+
+describe('getNextDueEntryForToday', function() {
+    it('should return most due entry', function() {
+        const nextDueEntry = getNextDueEntryForToday(USER_DB);
+        expect(nextDueEntry).to.deep.equal({id: 5, due: new Date(2015, 1, 1), word: {word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}});
     });
 });
 

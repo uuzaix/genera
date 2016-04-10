@@ -98,3 +98,16 @@ export function updateSuperMemoParameters(data, correct) {
   return superMemo2(data, quality);
 }
 
+export function getNextDueEntryForToday(USER_DB) {
+  return USER_DB.entries.
+    filter(function(entry) {
+      return entry.due <= new Date();
+  }).reduce(function(first, second) {
+      if (first.due < second.due) {
+        return first;
+      }
+      else {
+        return second
+      }
+  });
+}
