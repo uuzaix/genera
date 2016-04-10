@@ -10,7 +10,7 @@ export function superMemo2(entry, quality) {
     entry.repetition = 1 //proceed as a new word without updating the EF
   }
   else {
-    entry.EF = entry.EF + (0.1 - (5-quality)*(0.08+(5-quality)*0.02)) //calculate new EF
+    entry.EF = Math.round((entry.EF + (0.1 - (5-quality)*(0.08+(5-quality)*0.02)))*10)/10 //calculate new EF
     entry.repetition += 1
   }
 
