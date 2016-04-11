@@ -111,3 +111,32 @@ export function getNextDueEntryForToday(USER_DB) {
       }
   });
 }
+
+export function getNextToLearnToday(USER_DB) {
+  var nextDue = getNextDueEntryForToday(USER_DB);
+  if (nextDue) {
+    return nextDue
+  }
+  else:
+    return getNextNewEntryForToday();
+}
+
+export function judgeUserResponse(USER_DB, id, genus, sure) {
+  if (!(id in USER_DB.entries)) {
+    entry = createEntry(id)
+  }
+  else {
+    entry = lookupEntry(USER_DB, id)
+  }
+  var correct = genus === entry.word.genus;
+  saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
+  
+}
+
+export function lookupEntry(USER_DB, id) {
+
+}
+
+export function saveEntry(USER_DB, id, entry) {
+
+}
