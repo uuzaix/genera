@@ -66,9 +66,9 @@ export function getDefaultSuperMemoParameters(correct, sure) {
 
 //freqDB - pass to func or be in the global scope?
 export function createEntry(freqDB, id) {
-  var newEntry = freqDB.filter(function(entry) {
-    return entry.id == id
-  });
+  var newEntry = freqDB.filter(
+    entry => entry.id === id
+  );
   return {id: id, due: 'NEW', word: newEntry[0]}
 }
 
@@ -122,11 +122,11 @@ export function getNextToLearnToday(USER_DB) {
 }
 
 export function judgeUserResponse(USER_DB, id, genus, sure) {
-  if (!(id in USER_DB.entries)) {
+  if (lookupEntry(USER_DB, id) === []) { 
     entry = createEntry(id)
   }
   else {
-    entry = lookupEntry(USER_DB, id)
+    entry = lookupEntry(USER_DB, id) //TODO remove duplication
   }
   var correct = genus === entry.word.genus;
   saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
@@ -134,9 +134,20 @@ export function judgeUserResponse(USER_DB, id, genus, sure) {
 }
 
 export function lookupEntry(USER_DB, id) {
-
+  return USER_DB.entries.filter(
+    entry => entry.id === id)
 }
 
 export function saveEntry(USER_DB, id, entry) {
-
+  if (lookupEntry(USER_DB, id) === []) { 
+    USER_DB.entries.append(entry)
+  }
+  else {
+    USER_DB.entries.map(function(DBentry) {
+      if (DBentry.id === id) {
+        DBentry.due = entry.due;
+        DBentry.word = entry.word;
+      }
+    })
+  }
 }
