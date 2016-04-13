@@ -82,14 +82,14 @@ export function getNextNewEntryForToday(freqDB, USER_DB) {
 }
 
 export function updateEntry(entry, correct, sure) {
-  if (enrty.due === 'NEW') {
+  if (entry.due === 'NEW') {
     entry.superMemoData = getDefaultSuperMemoParameters(correct, sure);
-    //entry.due = new Date() 
-    entry.due.setDate(entry.due.getDate()+ entry.superMemoData.interval);
   }
   else {
-    entry.superMemoData = updateSupeMemoParameters(entry.superMemoData, correct)
+    entry.superMemoData = updateSuperMemoParameters(entry.superMemoData, correct)
   }
+  entry.due = new Date(); 
+  entry.due.setDate(entry.due.getDate() + entry.superMemoData.interval);
   return entry
 }
 
@@ -122,6 +122,11 @@ export function getNextToLearnToday(USER_DB) {
   }
 }
 
+export function lookupEntry(USER_DB, id) {
+  return USER_DB.entries.filter(
+    entry => entry.id === id)[0];  //TODO [0] should probably be changed
+}
+
 export function saveEntry(USER_DB, id, entry) {
   if (lookupEntry(USER_DB, id) === undefined) { 
     USER_DB.entries.push(entry);
@@ -136,18 +141,12 @@ export function saveEntry(USER_DB, id, entry) {
       }
     });
   }
-  return USER_DB;
 }
 
-export function lookupEntry(USER_DB, id) {
-  return USER_DB.entries.filter(
-    entry => entry.id === id)[0];  //TODO [0] should be probably be changed
-}
-
-
-export function judgeUserResponse(USER_DB, id, genus, sure) {
-  if (lookupEntry(USER_DB, id) === []) { 
-    entry = createEntry(id)
+export function judgeUserResponse(freqDB, USER_DB, id, genus, sure) {
+  var entry;
+  if (lookupEntry(USER_DB, id) === undefined) { 
+    entry = createEntry(freqDB, id)
   }
   else {
     entry = lookupEntry(USER_DB, id) //TODO remove duplication
