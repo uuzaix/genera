@@ -1,4 +1,4 @@
-import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSuperMemoParameters, createEntry, createUserDB, getNextNewEntryForToday, updateSuperMemoParameters, getNextDueEntryForToday} from './app'
+import { updateEntry, superMemo2, newEntries, dueEntries, toLearnToday, getDefaultSuperMemoParameters, createEntry, createUserDB, getNextNewEntryForToday, updateSuperMemoParameters, getNextDueEntryForToday, lookupEntry, saveEntry} from './app'
 import { expect } from 'chai'
 
 describe('updateEntry', function () {
@@ -54,12 +54,12 @@ const DB = [
 
 const USER_DB = { 
    entries: [
-      {id: 2, due: new Date(2016, 1, 1), word: {word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {}},
-      {id: 3, due: new Date(2020, 1, 1), word: {word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {}}, 
-      {id: 5, due: new Date(2015, 1, 1), word: {word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}}
-    ],
+      {id: 2, due: new Date(2016, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {}},
+      {id: 3, due: new Date(2020, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {}}, 
+      {id: 5, due: new Date(2015, 1, 1), word: {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}},
+      ],
     data: {
-      lastNew: 6     
+      lastNew: 6,
     }
 }
 
@@ -154,7 +154,58 @@ describe('updateSuperMemoParameters', function() {
 describe('getNextDueEntryForToday', function() {
     it('should return most due entry', function() {
         const nextDueEntry = getNextDueEntryForToday(USER_DB);
-        expect(nextDueEntry).to.deep.equal({id: 5, due: new Date(2015, 1, 1), word: {word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}});
+        expect(nextDueEntry).to.deep.equal({id: 5, due: new Date(2015, 1, 1), word: {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}});
     });
 });
 
+describe('lookupEntry', function() {
+    it('should return  entry', function() {
+        const entry = lookupEntry(USER_DB, 3);
+        expect(entry).to.deep.equal({id: 3, due: new Date(2020, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {}});
+    });
+});
+
+describe('lookupEntry', function() {
+    it('should return empty list', function() {
+        const entry = lookupEntry(USER_DB, 10);
+        expect(entry).to.deep.equal(undefined);
+    });
+});
+
+describe('saveEntry', function() {
+    it('should add new entry to the DB', function() {
+        const DB = saveEntry(USER_DB, 10, {id: 10, due: new Date(2016, 1, 1), 
+            word: {id:10, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, 
+            superMemoData: {interval: 1, EF: 1.3, repetition: 1}});
+        expect(DB).to.deep.equal({ 
+   entries: [
+      {id: 2, due: new Date(2016, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {}},
+      {id: 3, due: new Date(2020, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {}}, 
+      {id: 5, due: new Date(2015, 1, 1), word: {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {}},
+      {id: 10, due: new Date(2016, 1, 1), word: {id:10, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, superMemoData: {interval: 1, EF: 1.3, repetition: 1}}
+    ],
+    data: {
+      lastNew: 10
+    }
+});
+    });
+});
+
+describe('saveEntry', function() {
+    it('should return updated USER_DB', function() {
+        const DB = saveEntry(USER_DB, 5, {id: 5, due: new Date(2016, 1, 1), 
+          word: {id:5, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, 
+          superMemoData: {interval: 1, EF: 1.3, repetition: 1}});
+        expect(DB).to.deep.equal({ 
+   entries: [
+      {id: 2, due: new Date(2016, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {}},
+      {id: 3, due: new Date(2020, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {}}, 
+      {id: 5, due: new Date(2016, 1, 1), word: {id:5, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, superMemoData: {interval: 1, EF: 1.3, repetition: 1}},
+      {id: 10, due: new Date(2016, 1, 1), word: {id:10, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, superMemoData: {interval: 1, EF: 1.3, repetition: 1}}
+      ],
+    data: {
+      lastNew: 10
+    }
+});
+    });
+});

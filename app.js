@@ -117,9 +117,33 @@ export function getNextToLearnToday(USER_DB) {
   if (nextDue) {
     return nextDue
   }
-  else:
+  else{
     return getNextNewEntryForToday();
+  }
 }
+
+export function saveEntry(USER_DB, id, entry) {
+  if (lookupEntry(USER_DB, id) === undefined) { 
+    USER_DB.entries.push(entry);
+    USER_DB.data.lastNew = id;
+  }
+  else {
+    USER_DB.entries.map(function(DBentry) {
+      if (DBentry.id === id) {
+        DBentry.due = entry.due;
+        DBentry.word = entry.word;
+        DBentry.superMemoData = entry.superMemoData;
+      }
+    });
+  }
+  return USER_DB;
+}
+
+export function lookupEntry(USER_DB, id) {
+  return USER_DB.entries.filter(
+    entry => entry.id === id)[0];  //TODO [0] should be probably be changed
+}
+
 
 export function judgeUserResponse(USER_DB, id, genus, sure) {
   if (lookupEntry(USER_DB, id) === []) { 
@@ -130,24 +154,4 @@ export function judgeUserResponse(USER_DB, id, genus, sure) {
   }
   var correct = genus === entry.word.genus;
   saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
-  
-}
-
-export function lookupEntry(USER_DB, id) {
-  return USER_DB.entries.filter(
-    entry => entry.id === id)
-}
-
-export function saveEntry(USER_DB, id, entry) {
-  if (lookupEntry(USER_DB, id) === []) { 
-    USER_DB.entries.append(entry)
-  }
-  else {
-    USER_DB.entries.map(function(DBentry) {
-      if (DBentry.id === id) {
-        DBentry.due = entry.due;
-        DBentry.word = entry.word;
-      }
-    })
-  }
 }
