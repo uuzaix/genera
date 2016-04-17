@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
+    "express": "^4.13.4",
     "lodash": "^4.5.1",
     "lodash.orderby": "^4.2.0"
   },
