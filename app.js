@@ -40,6 +40,9 @@ export function superMemo2(entry, quality) {
   }
   else {
     entry.EF = Math.round((entry.EF + (0.1 - (5-quality)*(0.08+(5-quality)*0.02)))*10)/10 //calculate new EF
+    if (entry.EF > 2.5) {
+      entry.EF = 2.5
+    }
     entry.repetition += 1
   }
 
@@ -57,6 +60,7 @@ export function superMemo2(entry, quality) {
   return entry
 }
 
+//OUTDATED
 // export function newEntries(db) {
 //   var newEntry = db.filter(entry => entry.due === "NEW")
 //   return _.orderBy(newEntry, ['frequency'], ['desc']);
@@ -182,16 +186,16 @@ export function judgeUserResponse(freqDB, USER_DB, id, genus, sure) {
   saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
 }
 
-
-export function dummy(USER_DB) {
-  return USER_DB
-}
-
-app.get('/', function (req, res) {
+app.get('/getNext', function (req, res) {
   res.send(getNextToLearnToday(USER_DB));
   judgeUserResponse(FREQUENCIES, USER_DB, getNextToLearnToday(USER_DB).id, getNextToLearnToday(USER_DB).word.genus, true)
-  //updateEntry(getNextToLearnToday(USER_DB), true, true);
 });
+
+app.get('/checkOne', function (req, res) {
+  res.send(lookupEntry(USER_DB, 3));
+  judgeUserResponse(FREQUENCIES, USER_DB, 3, 'M', true)
+});
+
 
 app.listen(4000, function () {
   console.log('Example app listening on port 4000!');
