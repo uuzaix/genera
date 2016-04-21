@@ -46,14 +46,6 @@ const FREQUENCIES = [
   {id: 10, word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
 ]
 
-const DB = [
-  {id: 1, due: 'NEW', frequency: 4},
-  {id: 2, due: new Date(2016, 1, 1), frequency: 2},
-  {id: 3, due: new Date(2020, 1, 1), frequency: 3},
-  {id: 4, due: 'NEW', frequency: 5},
-  {id: 5, due: new Date(2015, 1, 1), frequency: 1}
-]
-
 const USER_DB = { 
   entries: [
   {id: 2, due: new Date(2016, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
@@ -80,31 +72,6 @@ const entry2 = {
 }
 
 const TODAY = new Date(2017, 1, 1);
-
-//OUTDATED
-// describe('newEntries', function () {
-//   it('should return all new entries in order of frequency', function () {
-//     const entries = newEntries(DB);
-//     const ids = entries.map(e => e.id);
-//     expect(ids).to.deep.equal([4, 1]);
-//   });
-// });
-
-// describe('dueEntries', function() {
-//   it('should return all due entries, most due first', function() {
-//     const entries = dueEntries(DB, TODAY);
-//     const ids = entries.map(e => e.id);
-//     expect(ids).to.deep.equal([5, 2]);
-//   });
-// });
-
-// describe('toLearnToday', function() {
-//   it('should return all due entries, then all new entries', function() {
-//     const entries = toLearnToday(DB, TODAY);
-//     const ids = entries.map(e => e.id);
-//     expect(ids).to.deep.equal([5, 2, 4, 1]);
-//   });
-// });
 
 describe('getDefaultSuperMemoParameters', function() {
   it('should return correct SM data', function() {
