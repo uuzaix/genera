@@ -7,12 +7,12 @@ var app = express();
 
 var USER_DB = { 
    entries: [
-      {id: 2, due: new Date(2016, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
-      {id: 3, due: new Date(2020, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}}, 
-      {id: 5, due: new Date(2015, 1, 1), word: {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
+      {id: 1, due: new Date(2016, 1, 1), word: {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
+      {id: 2, due: new Date(2020, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}}, 
+      {id: 3, due: new Date(2015, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
       ],
     data: {
-      lastNew: 6,
+      lastNew: 3,
     }
 }
 
@@ -184,18 +184,31 @@ export function judgeUserResponse(freqDB, USER_DB, id, genus, sure) {
   }
   var correct = genus === entry.word.genus;
   saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
+  return correct;
 }
 
-app.get('/getNext', function (req, res) {
+// app.get('/getNext', function (req, res) {
+//   res.send(getNextToLearnToday(USER_DB));
+//   judgeUserResponse(FREQUENCIES, USER_DB, getNextToLearnToday(USER_DB).id, getNextToLearnToday(USER_DB).word.genus, true)}
+// );
+
+// app.get('/checkOne', function (req, res) {
+//   res.send(lookupEntry(USER_DB, 3));
+//   judgeUserResponse(FREQUENCIES, USER_DB, 3, 'M', true)
+// });
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+app.get('/word', function (req, res) {
   res.send(getNextToLearnToday(USER_DB));
-  judgeUserResponse(FREQUENCIES, USER_DB, getNextToLearnToday(USER_DB).id, getNextToLearnToday(USER_DB).word.genus, true)
 });
 
-app.get('/checkOne', function (req, res) {
-  res.send(lookupEntry(USER_DB, 3));
-  judgeUserResponse(FREQUENCIES, USER_DB, 3, 'M', true)
+app.post('/judge', function (req, res, next) {
+  const correct = judgeUserResponse(FREQUENCIES, USER_DB, req.body.id, req.body.genus, req.body.sure);
+  console.log(USER_DB); 
+  res.send(correct);
 });
-
 
 app.listen(4000, function () {
   console.log('Example app listening on port 4000!');
