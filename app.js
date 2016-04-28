@@ -197,14 +197,16 @@ export function judgeUserResponse(freqDB, USER_DB, id, genus, sure) {
 //   judgeUserResponse(FREQUENCIES, USER_DB, 3, 'M', true)
 // });
 
+var path = require('path');
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
+app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.get('/word', function (req, res) {
   res.send(getNextToLearnToday(USER_DB));
 });
 
-app.post('/judge', function (req, res, next) {
+app.post('/word', function (req, res, next) {
   const correct = judgeUserResponse(FREQUENCIES, USER_DB, req.body.id, req.body.genus, req.body.sure);
   console.log(USER_DB); 
   res.send(correct);
