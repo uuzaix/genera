@@ -5,29 +5,29 @@ import 'express'
 var express = require('express');
 var app = express();
 
-var USER_DB = { 
-   entries: [
-      {id: 1, due: new Date(2016, 1, 1), word: {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
-      {id: 2, due: new Date(2020, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}}, 
-      {id: 3, due: new Date(2015, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
-      ],
-    data: {
-      lastNew: 3,
-    }
-}
+var USER_DB = {
+  entries: [
+  {id: 1, due: new Date(2016, 1, 1), word: {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
+  {id: 2, due: new Date(2020, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}}, 
+  {id: 3, due: new Date(2015, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
+  ],
+  data: {
+    lastNew: 3,
+  }
+};
 
 var FREQUENCIES = [
-    {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
-    {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
-    {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
-    {id: 4, word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
-    {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
-    {id: 6, word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
-    {id: 7, word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
-    {id: 8, word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
-    {id: 9, word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
-    {id: 10, word: 'main', genus: 'F', rank: 9, frequency: 499.6},
-]
+  {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
+  {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
+  {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
+  {id: 4, word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
+  {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
+  {id: 6, word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
+  {id: 7, word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
+  {id: 8, word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
+  {id: 9, word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
+  {id: 10, word: 'main', genus: 'F', rank: 9, frequency: 499.6},
+];
 
 export function superMemo2(entry, quality) {
   // if (answer.quality < 2 || answer.quality > 5) {
