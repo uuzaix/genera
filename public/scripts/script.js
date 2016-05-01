@@ -4,19 +4,23 @@ var DictonaryBox = React.createClass({
   handleInputSubmit: function(answ) {
     var answer = this.state.data;
     this.setState({data: answer});
+    var idToSent = this.state.data.id;
+    var dataToSent = {id: idToSent, genus:answ.genus, sure: answ.sure};
     $.ajax({
       url: this.props.url,
+      contentType: 'application/json',
       dataType: 'json',
       type: 'POST',
-      data: answ,
+      data: JSON.stringify(dataToSent),
       success: function(data) {
-        this.setState({data: data});
+        this.setState({data: dataToSent});
       }.bind(this),
       error: function(xhr, status, err) {
-        this.setState({data: comments});
+        this.setState({data: answer});
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
+    this.componentDidMount();
   },
 
   getInitialState: function() {
@@ -26,8 +30,9 @@ var DictonaryBox = React.createClass({
   componentDidMount: function() {
     this.serverRequest = $.get(this.props.url, function (result) {
       var dueWord = result;
+      var id = dueWord.id;
       this.setState({
-        data: dueWord.word.word
+        data: dueWord.word
       });
     }.bind(this));
   },
@@ -52,7 +57,7 @@ var Word = React.createClass({
   render: function() {
     return (
       <div className="word">
-        {this.props.data}
+        {this.props.data.word}
       </div>
     );
   }
@@ -60,7 +65,7 @@ var Word = React.createClass({
 
 var UserInput = React.createClass({
   getInitialState: function() {
-    return {id: '', genus: '', sure: false};
+    return {genus: '', sure: false};
   },
   handleGenusChange: function(e) {
     this.setState({genus: e.target.value});
