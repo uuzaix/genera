@@ -2,10 +2,9 @@
 var DictonaryBox = React.createClass({
 
   handleInputSubmit: function(answ) {
-    var answer = this.state.data;
-    this.setState({data: answer});
-    var idToSent = this.state.data.id;
-    var dataToSent = {id: idToSent, genus:answ.genus, sure: answ.sure};
+    var data = this.state.data;
+    this.setState({data: data});
+    var dataToSent = {id: data.id, genus:answ.genus, sure: answ.sure};
     $.ajax({
       url: this.props.url,
       contentType: 'application/json',
@@ -16,7 +15,7 @@ var DictonaryBox = React.createClass({
         this.setState({data: dataToSent});
       }.bind(this),
       error: function(xhr, status, err) {
-        this.setState({data: answer});
+        this.setState({data: data});
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
@@ -47,7 +46,9 @@ var DictonaryBox = React.createClass({
       <div className="dictonaryBox">
         <h1>GENERA</h1>
         <Word data={this.state.data} />
-        <UserInput onInputSubmit={this.handleInputSubmit} />
+        <UserInput 
+          onInputSubmit={this.handleInputSubmit} 
+          sure = {this.state.sure}/>
       </div>
     );
   }
@@ -77,7 +78,7 @@ var UserInput = React.createClass({
     e.preventDefault();
     var genus = this.state.genus.trim();
     var sure = this.state.sure;
-    if (!genus || !sure) {
+    if (!genus){
       return;
     }
     this.props.onInputSubmit({genus: genus, sure: sure});
@@ -97,7 +98,7 @@ var UserInput = React.createClass({
         <p>
           <input
             type="checkbox"
-            sure={this.props.sure}
+            checked={this.state.sure}
             ref="sure"
             onChange={this.handleSureChange}
           />
