@@ -40,7 +40,6 @@ var DictonaryBox = React.createClass({
     this.serverRequest.abort();
   },
 
-
   render: function() {
     return (
       <div className="dictonaryBox">
@@ -68,34 +67,19 @@ var UserInput = React.createClass({
   getInitialState: function() {
     return {genus: '', sure: false};
   },
-  handleGenusChange: function(e) {
-    this.setState({genus: e.target.value});
-  },
   handleSureChange: function(e) {
     this.setState({sure: !this.state.sure});
   },
-  handleSubmit: function(e) {
-    e.preventDefault();
-    var genus = this.state.genus.trim();
+  handleClick: function(name, e) {
+    var genus = name;
     var sure = this.state.sure;
-    if (!genus){
-      return;
-    }
     this.props.onInputSubmit({genus: genus, sure: sure});
     this.setState({genus: '', sure: false});
   },
 
   render: function() {
     return (
-      <form className="userInput" onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          placeholder="Genus..."
-          value={this.state.genus}
-          onChange={this.handleGenusChange}
-        />
-
-        <p>
+      <form className="userInput" >
           <input
             type="checkbox"
             checked={this.state.sure}
@@ -104,8 +88,10 @@ var UserInput = React.createClass({
           />
           {' '}
           Sure?
+          <p>
+        <input type="button" onClick={this.handleClick.bind(this, "F")} value="Femenin" />
+        <input type="button" onClick={this.handleClick.bind(this, "M")} value="Maskulin" />
         </p>
-        <input type="submit" value="Post" />
       </form>
     );
   }
