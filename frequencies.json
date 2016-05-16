@@ -1,0 +1,10 @@
+  {"id": 1, "word": "chose", "genus": "F", "reank": 1, "frequency": 1773.62}
+  {"id": 2, "word": "homme", "genus": "M", "reank": 2, "frequency": 1123.55}
+  {"id": 3, "word": "jour", "genus": "M", "reank": 3, "frequency": 1061.92}
+  {"id": 4, "word": "temps", "genus": "M", "reank": 4, "frequency": 1031.05}
+  {"id": 5, "word": "femme", "genus": "F", "reank": 5, "frequency": 1049.32}
+  {"id": 6, "word": "fois", "genus": "F", "reank": 6, "frequency": 899.25}
+  {"id": 7, "word": "peu", "genus": "M", "reank": 7, "frequency": 894.78}
+  {"id": 8, "word": "vie", "genus": "F", "reank": 8, "frequency": 1021.22}
+  {"id": 9, "word": "oeil", "genus": "M", "reank": 10, "frequency": 413.04}
+  {"id": 10, "word": "main", "genus": "F", "reank": 9, "frequency": 499.6}

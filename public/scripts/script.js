@@ -13,13 +13,13 @@ var DictonaryBox = React.createClass({
       data: JSON.stringify(dataToSent),
       success: function(data) {
         this.setState({data: dataToSent});
+        this.componentDidMount();
       }.bind(this),
       error: function(xhr, status, err) {
         this.setState({data: data});
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
-    this.componentDidMount();
   },
 
   getInitialState: function() {
@@ -70,8 +70,8 @@ var UserInput = React.createClass({
   handleSureChange: function(e) {
     this.setState({sure: !this.state.sure});
   },
-  handleClick: function(name, e) {
-    var genus = name;
+  handleClick: function(answer, e) {
+    var genus = answer;
     var sure = this.state.sure;
     this.props.onInputSubmit({genus: genus, sure: sure});
     this.setState({genus: '', sure: false});

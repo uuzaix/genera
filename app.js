@@ -2,6 +2,9 @@ import _ from 'lodash'
 
 import 'express'
 
+//  /c/Program\ Files/MongoDB/Server/3.2/bin/mongoimport.exe --db genera --collection frequencies --drop --file frequencies.json - create collection
+//  /c/Program\ Files/MongoDB/Server/3.2/bin/mongod.exe --dbpath /c/Docs/Mongo_DB/data/ - run MongoDB system
+
 var express = require('express');
 var app = express();
 
@@ -9,25 +12,31 @@ var USER_DB = {
   entries: [
   {id: 1, due: new Date(2016, 1, 1), word: {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
   {id: 2, due: new Date(2020, 1, 1), word: {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}}, 
-  {id: 3, due: new Date(2015, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
+  {id: 3, due: new Date(2018, 1, 1), word: {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92}, superMemoData: {interval: 1, EF: 1.3, repetition: 2}},
   ],
   data: {
     lastNew: 3,
   }
 };
 
-var FREQUENCIES = [
-  {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
-  {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
-  {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
-  {id: 4, word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
-  {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
-  {id: 6, word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
-  {id: 7, word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
-  {id: 8, word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
-  {id: 9, word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
-  {id: 10, word: 'main', genus: 'F', rank: 9, frequency: 499.6},
-];
+// var FREQUENCIES = [
+//   {id: 1, word: 'chose', genus: 'F', rank: 1, frequency: 1773.62},
+//   {id: 2, word: 'homme', genus: 'M', rank: 2, frequency: 1123.55},
+//   {id: 3, word: 'jour', genus: 'M', rank: 3, frequency: 1061.92},
+//   {id: 4, word: 'temps', genus: 'M', rank: 4, frequency: 1031.05},
+//   {id: 5, word: 'femme', genus: 'F', rank: 5, frequency: 1049.32},
+//   {id: 6, word: 'fois', genus: 'F', rank: 6, frequency: 899.25},
+//   {id: 7, word: 'peu', genus: 'M', rank: 7, frequency: 894.78},
+//   {id: 8, word: 'vie', genus: 'F', rank: 8, frequency: 1021.22},
+//   {id: 9, word: 'oeil', genus: 'M', rank: 10, frequency: 413.04},
+//   {id: 10, word: 'main', genus: 'F', rank: 9, frequency: 499.6},
+// ];
+
+
+var MongoClient = require('mongodb').MongoClient;
+var assert = require('assert');
+var url = 'mongodb://localhost:27017/genera';
+var ObjectId = require('mongodb').ObjectID;
 
 export function superMemo2(entry, quality) {
   // if (answer.quality < 2 || answer.quality > 5) {
@@ -60,22 +69,6 @@ export function superMemo2(entry, quality) {
   return entry
 }
 
-//OUTDATED
-// export function newEntries(db) {
-//   var newEntry = db.filter(entry => entry.due === "NEW")
-//   return _.orderBy(newEntry, ['frequency'], ['desc']);
-// }
-
-// export function dueEntries(db, today) {
-//    var dueEntry = db.filter(entry => (entry.due !== "NEW" && entry.due <= today));
-//   return _.orderBy(dueEntry, ['due'], ['asc']);
-// }
-
-// // TODO better name
-// export function toLearnToday(db, today) {
-//   return dueEntries(db, today).concat(newEntries(db));
-// }
-
 export function getDefaultSuperMemoParameters(correct, sure) {
   if (correct === true && sure === true) {
     return {interval: 100, EF: 2.5, repetition: 1}
@@ -88,21 +81,26 @@ export function getDefaultSuperMemoParameters(correct, sure) {
   }
 }
 
-//freqDB - pass to func or be in the global scope?
-export function createEntry(freqDB, id) {
-  var newEntry = freqDB.filter(
-    entry => entry.id === id
-  );
-  return {id: id, due: 'NEW', word: newEntry[0]}
+export function createEntry(id, callback) {
+  MongoClient.connect(url, function(err, db) {
+    assert.equal(null, err);
+    var cursor = db.collection('frequencies').findOne({"id": id}, function (err, doc) {
+      if (doc != null) {
+        callback({id: doc.id, due: 'NEW', word: doc});
+      }
+      db.close();
+    });
+
+  });
 }
+
 
 export function createUserDB() {
   return {entries: [], data: {lastNew: 0}}
 }
 
-//freqDB - pass to func or be in the global scope?
-export function getNextNewEntryForToday(freqDB, USER_DB) {
-  return createEntry(freqDB, (USER_DB.data.lastNew + 1))
+export function getNextNewEntryForToday(USER_DB, callback) {
+  createEntry(USER_DB.data.lastNew + 1, callback);
 }
 
 export function updateEntry(entry, correct, sure) {
@@ -142,13 +140,13 @@ export function getNextDueEntryForToday(USER_DB) {
   }
 }
 
-export function getNextToLearnToday(USER_DB) {
+export function getNextToLearnToday(USER_DB, callback) {
   var nextDue = getNextDueEntryForToday(USER_DB);
   if (!(_.isEmpty(nextDue))) {
-    return nextDue;
+    callback(nextDue);
   }
   else {
-    return getNextNewEntryForToday(FREQUENCIES, USER_DB); //to fix 
+    getNextNewEntryForToday(USER_DB, callback); 
   }
 }
 
@@ -173,18 +171,23 @@ export function saveEntry(USER_DB, id, entry) {
   }
 }
 
-export function judgeUserResponse(freqDB, USER_DB, id, genus, sure) {
+export function judgeUserResponse(USER_DB, id, genus, sure, callback) {
   var entry;
   var entryList = lookupEntry(USER_DB, id);
-  if (_.isEmpty(entryList)) { 
-    entry = createEntry(freqDB, id)
+ if (_.isEmpty(entryList)) { 
+    createEntry(id, function (entry) {
+
+      var correct = genus === entry.word.genus;
+      saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
+      callback(correct);
+    })
   }
   else {
     entry = entryList[0];
+    var correct = genus === entry.word.genus;
+    saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
+    callback(correct);
   }
-  var correct = genus === entry.word.genus;
-  saveEntry(USER_DB, id, updateEntry(entry, correct, sure));
-  return correct;
 }
 
 // app.get('/getNext', function (req, res) {
@@ -203,13 +206,13 @@ app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.get('/word', function (req, res) {
-  res.send(getNextToLearnToday(USER_DB));
+  getNextToLearnToday(USER_DB, function (nextToLearnToday) {res.send(nextToLearnToday)});
 });
 
 app.post('/word', function (req, res, next) {
-  const correct = judgeUserResponse(FREQUENCIES, USER_DB, req.body.id, req.body.genus, req.body.sure);
-  console.log(USER_DB); 
-  res.send(correct);
+  judgeUserResponse(USER_DB, req.body.id, req.body.genus, req.body.sure,
+   function (correct) {res.send(correct)});
+  
 });
 
 app.listen(4000, function () {
